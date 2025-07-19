@@ -21,7 +21,8 @@ jobs:
             texlive-latex-base \
             texlive-latex-recommended \
             texlive-fonts-recommended \
-            texlive-latex-extra
+            texlive-latex-extra \
+            texlive-lang-german
 
       - name: 🛠 Compile LaTeX
         working-directory: ./docs
