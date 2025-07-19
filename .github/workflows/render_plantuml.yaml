@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'diagrams/**/*.puml'
+      - '.github/workflows/render_plantuml.yaml'
   pull_request:
     paths:
       - 'diagrams/**/*.puml'
