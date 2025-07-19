@@ -1,0 +1,15 @@
+@startuml
+actor Nutzer
+participant FrontEnd
+participant API_Server
+participant Datenbank
+
+Nutzer -> FrontEnd : Klickt auf "Registrieren"
+FrontEnd -> API_Server : POST /register {Nutzername, Passwort, E-Mail}
+API_Server -> Datenbank : Nutzer speichern
+Datenbank --> API_Server : Bestätigung OK
+API_Server --> FrontEnd : Registrierung erfolgreich
+FrontEnd --> Nutzer : Zeige: Registrierung erfolgreich
+
+@enduml
+

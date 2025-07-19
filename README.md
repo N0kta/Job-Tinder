@@ -16,3 +16,5 @@ pdflatex jobtinder_doku.tex
 ## 🗂️ Diagramm: Rechts wischen
 
 ![Rechts wischen](diagrams/rendered/rechts_wischen.svg)
+![Registrieren](diagrams/rendered/registrieren.svg)
+![Login](diagrams/rendered/login.svg)

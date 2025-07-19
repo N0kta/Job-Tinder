@@ -1,0 +1,20 @@
+@startuml
+actor Nutzer
+participant FrontEnd
+participant API_Server
+participant Datenbank
+
+Nutzer -> FrontEnd : Gibt Login-Daten ein
+FrontEnd -> API_Server : POST /login {Nutzername, Passwort}
+API_Server -> Datenbank : Vergleiche Zugangsdaten
+Datenbank --> API_Server : OK oder Fehler
+alt Zugangsdaten korrekt
+    API_Server --> FrontEnd : Token / Session-ID senden
+    FrontEnd --> Nutzer : Login erfolgreich, weiterleitung zum Dashboard
+else Zugangsdaten falsch
+    API_Server --> FrontEnd : Fehlernachricht
+    FrontEnd --> Nutzer : Zeige "Falsche Login-Daten"
+end
+
+@enduml
+
