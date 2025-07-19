@@ -33,7 +33,7 @@ jobs:
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.5.4
         with:
-        ssh-private-key: ${{ secrets.ACTIONS_PUSH_KEY }}
+          ssh-private-key: ${{ secrets.ACTIONS_PUSH_KEY }}
 
       - name: Set remote URL to SSH
         run: git remote set-url origin git@github.com:N0kta/Job-Tinder.git
