@@ -1,0 +1,26 @@
+@startuml
+actor JobSuchende
+participant FrontEnd
+participant BackEnd
+participant Datenbank
+
+JobSuchende -> FrontEnd : swipe right (auf Job)
+alt Personalisierter Brief aktiviert
+    FrontEnd -> FrontEnd : Öffnet Brief-Editor
+    FrontEnd -> BackEnd : POST /bewerbung\n(mit personalisiertem Brief)
+else Kein Brief
+    FrontEnd -> BackEnd : POST /bewerbung\n(ohne Brief)
+end
+
+BackEnd -> Datenbank : Füge Job zu Bewerbungen des Nutzers hinzu
+Datenbank --> BackEnd : OK
+
+BackEnd -> Datenbank : Füge Nutzer zur Bewerberliste des Unternehmens hinzu
+Datenbank --> BackEnd : OK
+
+BackEnd -> Datenbank : GET /next_job (nächste Job-Anzeige)
+Datenbank --> BackEnd : Neue Job-Anzeige
+BackEnd --> FrontEnd : Neue Anzeige + Swipe-Animation
+FrontEnd --> JobSuchende : Neue Job-Karte anzeigen
+@enduml
+

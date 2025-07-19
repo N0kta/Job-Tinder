@@ -1,0 +1,24 @@
+name: Render PlantUML diagrams
+
+on:
+  push:
+    paths:
+      - 'diagrams/**/*.puml'    # Nur wenn sich Diagramme ändern
+  pull_request:
+    paths:
+      - 'diagrams/**/*.puml'
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Render PlantUML Diagramme
+        uses: plantuml/plantuml-action@v1
+        with:
+          format: png
+          source: diagrams/
+          output: diagrams/rendered/
+
