@@ -1,0 +1,78 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{lmodern}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{1em}{}
+
+\title{\textbf{Dokumentation – JobTinder Webanwendung}}
+\author{Webtechnologien 2 – Praktikumsauftrag}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Produktvision}
+
+Unsere Webanwendung \textbf{JobTinder} verfolgt das Ziel, den Bewerbungsprozess für junge Jobsuchende so einfach, intuitiv und mobilfreundlich wie möglich zu gestalten. Ähnlich wie bei bekannten Dating-Apps können Jobsuchende durch Stellenausschreibungen „swipen“, um schnell geeignete Angebote zu entdecken. Die Benutzeroberfläche ist asynchron gestaltet, sodass Jobsuchende und Jobgebende jeweils eine eigene, angepasste Nutzererfahrung erhalten.
+
+Zusätzlich bieten wir vorgefertigte Lebenslauf-Layouts sowie einfache Stellenvorlagen an, um den Aufwand für beide Seiten so gering wie möglich zu halten. Unser Fokus liegt auf Schnelligkeit, Übersichtlichkeit und einem klaren, modernen Interface.
+
+\section{Personas}
+
+\subsection*{Persona 1: Leon (22 Jahre)}
+\textbf{Berufseinsteiger}, sucht nach einem Praktikum oder Nebenjob. Er will sich nicht durch komplizierte Formulare kämpfen und bevorzugt mobile Anwendungen mit schneller Bedienung.
+
+\subsection*{Persona 2: Julia (30 Jahre)}
+\textbf{HR-Managerin} in einem Start-up. Sie möchte ohne Umwege passende Kandidat*innen entdecken und Stellenangebote unkompliziert online stellen.
+
+\subsection*{Persona 3: Amir (27 Jahre)}
+\textbf{Freelancer auf Jobsuche}. Ihm ist Flexibilität wichtig, er sucht projektbasierte Jobs und möchte sich mit minimalem Aufwand bewerben können.
+
+\section{User Stories}
+
+\begin{itemize}[leftmargin=1.5cm]
+    \item \textbf{Als Leon} möchte ich durch offene Stellenangebote swipen können, um schnell relevante Jobs zu entdecken.
+    \item \textbf{Als Julia} möchte ich mithilfe einer Vorlage schnell neue Jobangebote online stellen, ohne technische Vorkenntnisse.
+    \item \textbf{Als Amir} möchte ich einen Lebenslauf automatisch generieren lassen, damit ich keine Zeit mit Formatierung verliere.
+\end{itemize}
+
+\section{Epics}
+
+\begin{itemize}[leftmargin=1.5cm]
+    \item \textbf{Nutzerverwaltung}: Registrierung, Login, Rollen (Jobsuchende vs. Jobgebende)
+    \item \textbf{Matching-System}: Swipe-Mechanik zur Navigation durch Stellenanzeigen bzw. Kandidaten
+    \item \textbf{Asynchrone UI}: Unterschiedliche Inhalte für Jobsuchende und Jobgebende
+    \item \textbf{Vorlagen und Layouts}: Fertige Designs für Lebensläufe und Stellenausschreibungen
+    \item \textbf{Benachrichtigungen}: Push- oder E-Mail-Benachrichtigungen bei Matches oder Nachrichten
+    \item \textbf{Verwaltung von Stellenausschreibungen}: Erstellen, Bearbeiten, Deaktivieren
+\end{itemize}
+
+\section{Repository Integration (Git)}
+
+Die gesamte Projektstruktur sowie diese Dokumentation werden in ein Git-Repository eingecheckt. Dabei wird eine klare Struktur eingehalten:
+
+\begin{itemize}
+    \item \texttt{README.md} für erste Projektübersicht
+    \item \texttt{/docs} Ordner für LaTeX-Dokumentation
+    \item \texttt{/frontend} und \texttt{/backend} getrennt
+\end{itemize}
+
+\noindent Beispielhafte Git-Kommandos:
+
+\begin{verbatim}
+git init
+git add .
+git commit -m "Add initial documentation and project structure"
+git push origin main
+\end{verbatim}
+
+\end{document}
+
