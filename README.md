@@ -22,3 +22,6 @@ pdflatex jobtinder_doku.tex
 
 ### Login
 ![Login](diagrams/rendered/login.svg)
+
+### Bewerbungs Templates
+![templates](diagrams(rendered/templates.svg)
