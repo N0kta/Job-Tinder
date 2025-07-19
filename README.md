@@ -11,6 +11,7 @@ Die Dokumentation befindet sich im Ordner `docs/` und kann entweder lokal oder a
 ```bash
 cd docs
 pdflatex jobtinder_doku.tex
+```
 
 ## 🗂️ Diagramm: Rechts wischen
 
