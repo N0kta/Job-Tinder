@@ -12,3 +12,6 @@ Die Dokumentation befindet sich im Ordner `docs/` und kann entweder lokal oder a
 cd docs
 pdflatex jobtinder_doku.tex
 
+## 🗂️ Diagramm: Rechts wischen
+
+![Rechts wischen](diagrams/rendered/rechts_swipen.svg)
