@@ -31,8 +31,8 @@ jobs:
           done
 
       - name: Setup SSH
-      uses: webfactory/ssh-agent@v0.5.4
-      with:
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
         ssh-private-key: ${{ secrets.ACTIONS_PUSH_KEY }}
 
       - name: Set remote URL to SSH
