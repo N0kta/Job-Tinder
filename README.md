@@ -14,11 +14,11 @@ pdflatex jobtinder_doku.tex
 ```
 
 ## 🗂️ Diagramme
-#Rechts wischen
+### Rechts wischen
 ![Rechts wischen](diagrams/rendered/rechts_wischen.svg)
 
-# Registrieren
+### Registrieren
 ![Registrieren](diagrams/rendered/registrieren.svg)
 
-# Login
+### Login
 ![Login](diagrams/rendered/login.svg)
