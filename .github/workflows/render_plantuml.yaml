@@ -38,5 +38,5 @@ jobs:
           git commit -m "Rendered PlantUML diagrams via Kroki"
           git push
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ACTIONS_PUSH_KEY }}
 
