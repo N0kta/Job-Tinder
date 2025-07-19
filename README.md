@@ -15,4 +15,4 @@ pdflatex jobtinder_doku.tex
 
 ## 🗂️ Diagramm: Rechts wischen
 
-![Rechts wischen](diagrams/rendered/rechts_swipen.svg)
+![Rechts wischen](diagrams/rendered/rechts_wischen.svg)
