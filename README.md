@@ -13,8 +13,12 @@ cd docs
 pdflatex jobtinder_doku.tex
 ```
 
-## 🗂️ Diagramm: Rechts wischen
-
+## 🗂️ Diagramme
+#Rechts wischen
 ![Rechts wischen](diagrams/rendered/rechts_wischen.svg)
+
+#Registrieren
 ![Registrieren](diagrams/rendered/registrieren.svg)
+
+#Login
 ![Login](diagrams/rendered/login.svg)
