@@ -1,0 +1,24 @@
+@startuml
+actor Nutzer
+participant FrontEnd
+participant BackEnd
+participant Datenbank
+
+== Bewerbungs-Templates anzeigen ==
+Nutzer -> FrontEnd : Öffnet Bewerbungs-Templates
+FrontEnd -> BackEnd : GET /templates
+BackEnd -> Datenbank : Lade Templates
+Datenbank --> BackEnd : Templates
+BackEnd --> FrontEnd : Templates
+FrontEnd --> Nutzer : Zeigt Templates
+
+== Entwurf erstellen ==
+Nutzer -> FrontEnd : Wählt Template & füllt aus
+FrontEnd -> BackEnd : POST /entwurf (mit Nutzerdaten)
+BackEnd -> Datenbank : Entwurf speichern
+Datenbank --> BackEnd : OK
+BackEnd --> FrontEnd : Entwurf gespeichert
+FrontEnd --> Nutzer : Bestätigung anzeigen
+
+@enduml
+
