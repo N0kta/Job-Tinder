@@ -1,6 +1,6 @@
 # routers/users.py
 from fastapi import APIRouter
-from models import mock_data
+from app.models import mock_data
 
 router = APIRouter()
 

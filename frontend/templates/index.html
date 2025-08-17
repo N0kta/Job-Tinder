@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Swipe</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <h1>Swipe on Job</h1>
+    <button onclick="swipe(5, 0)">Swipe Left</button>
+    <button onclick="swipe(5, 1)">Swipe Right</button>
+
+    <p id="server-response"></p>
+
+    <script>
+        function swipe(jobId, direction) {
+            fetch(`/jobs/swipe/${jobId}`, { method: "POST",
+	    	headers: {"Content-Type": "application/json"},
+		    body: JSON.stringify({
+		    direction: direction})
+	    })
+                .then(res => res.json()) // Parse JSON from FastAPI
+                .then(data => {
+                    document.getElementById("server-response").textContent = data.message;
+                })
+                .catch(err => {
+                    document.getElementById("server-response").textContent = "Error: " + err;
+                });
+        }
+    </script>
+</body>
+</html>
+

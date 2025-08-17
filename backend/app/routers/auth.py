@@ -1,6 +1,6 @@
 # routers/auth.py
 from fastapi import APIRouter, HTTPException
-from models import mock_data
+from app.models import mock_data
 
 router = APIRouter()
 
