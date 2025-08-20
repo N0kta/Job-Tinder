@@ -16,18 +16,14 @@ class SwipeDirection(int, Enum):
     right = 1
 
 from pydantic import BaseModel
-
 class Swipe(BaseModel):
     direction: SwipeDirection
+    job_id: int
 
-#These Paths or for Both
-@router.get("/")
-def get_jobs(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
 
 
 #These Paths are for Employers
-@router.post("/")
+@router.post("/library")
 def create_job():
     pass
 
@@ -50,16 +46,20 @@ def get_next_applicant(job_id: int):
 
 
 #These Paths are for Applicants
-@router.get("/next")
+@router.get("/swipe")
+def get_jobs(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+@router.get("/swipe/next")
 def get_next_job():
     return mock_data.mock_jobs
 
 #User id is passed via Authentication
-@router.post("/swipe/{job_id}")
-def swipe_job(job_id: int, swipe: Swipe):
+@router.post("/swipe")
+def swipe_job(swipe: Swipe):
     if swipe.direction == SwipeDirection.left:
-        return {"message": f"User  swiped left on job {job_id}"}
+        return {"message": f"User  swiped left on job {swipe.job_id}"}
     elif swipe.direction == SwipeDirection.right:
-        return {"message": f"User  swiped right on job {job_id}"}
+        return {"message": f"User  swiped right on job {swipe.job_id}"}
     else:
         return {"message": "You arent suppose to see this"}

@@ -11,22 +11,7 @@
 
     <p id="server-response"></p>
 
-    <script>
-        function swipe(jobId, direction) {
-            fetch(`/jobs/swipe/${jobId}`, { method: "POST",
-	    	headers: {"Content-Type": "application/json"},
-		    body: JSON.stringify({
-		    direction: direction})
-	    })
-                .then(res => res.json()) // Parse JSON from FastAPI
-                .then(data => {
-                    document.getElementById("server-response").textContent = data.message;
-                })
-                .catch(err => {
-                    document.getElementById("server-response").textContent = "Error: " + err;
-                });
-        }
-    </script>
+    <script src="/static/js/script.js"></script>
 </body>
 </html>
 
