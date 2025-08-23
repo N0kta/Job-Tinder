@@ -1,6 +1,5 @@
 # routers/jobs.py
 from fastapi import APIRouter
-from app.models import mock_data
 from fastapi.templating import Jinja2Templates
 from fastapi import Request
 

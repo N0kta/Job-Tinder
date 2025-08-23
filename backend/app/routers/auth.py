@@ -1,19 +1,29 @@
 # routers/auth.py
 from fastapi import APIRouter, HTTPException
-from app.models import mock_data
+from sqlmodel import select
+from db.models import User
+from db.database import SessionDep
+import hashlib
 
 router = APIRouter()
 
+def hash_password(password: str):
+    """Hash a plain password for storing in DB."""
+    return hashlib.sha256(password.encode("utf-8")).hexdigest()
+
 @router.post("/login")
 def login(username: str, password: str):
-    user = next((u for u in mock_data.mock_users if u["username"] == username and u["password"] == password), None)
-    if not user:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-    return {"message": f"Welcome {username}!"}
+    pass
 
 @router.post("/register")
-def register(username: str, password: str):
-    new_user = {"id": len(mock_data.mock_users) + 1, "username": username, "password": password}
-    mock_data.mock_users.append(new_user)
-    return {"message": "User registered", "user": new_user}
+def register(user: User, session: SessionDep):
+    user.hashed_password = hash_password(user.hashed_password)
+    session.add(user)
+    session.commit()
+    session.refresh(user)
+    return user
+
+@router.get("/register")
+def list_users(session: SessionDep):
+    return session.exec(select(User)).all()
 
