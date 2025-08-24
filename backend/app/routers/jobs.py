@@ -1,6 +1,5 @@
 # routers/jobs.py
 from fastapi import APIRouter
-from fastapi.templating import Jinja2Templates
 from fastapi import Request
 
 router = APIRouter()
@@ -47,7 +46,7 @@ def get_next_applicant(job_id: int):
 #These Paths are for Applicants
 @router.get("/swipe")
 def get_jobs(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse("swipe.html", {"request": request})
 
 @router.get("/swipe/next")
 def get_next_job():

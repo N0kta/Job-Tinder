@@ -1,6 +1,6 @@
-from sqlmodel import SQLModel, Field, Relationship, JSON
+from sqlmodel import SQLModel, Field, Relationship, JSON, Column
 from pydantic import EmailStr
-from typing import List
+from typing import List, Any, Dict
 from datetime import datetime, timezone
 
 import enum
@@ -80,7 +80,10 @@ class Template(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     type: str = Field(nullable=False)  # 'cv' or 'flyer' (could also use Enum)
     name: str = Field(nullable=False)
-    structure: JSON = Field(nullable=False)  # JSONB in SQL
+    structure: Dict[str, Any] = Field( 
+        sa_column=Column(JSON,
+        nullable=False,
+        default_factory=dict))  # JSONB in SQL
 
     created_by: int | None = Field(foreign_key="user.id")  # ON DELETE SET NULL handled manually in Python/DB
     creator: User | None = Relationship(back_populates="templates_created")
