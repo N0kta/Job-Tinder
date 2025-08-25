@@ -1,0 +1,61 @@
+services:
+  db:
+    image: postgres:15
+    container_name: jobtinder-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: jobtinder_db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./init-keycloak.sql:/docker-entrypoint-initdb.d/init-keycloak.sql
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0.7
+    container_name: keycloak
+    restart: always
+    command:
+      - start-dev
+      - --hostname-url=https://jobtinder.local/keycloak
+      - --hostname-admin-url=https://jobtinder.local/keycloak
+      - --db=postgres
+      - --db-url-host=db
+      - --db-username=postgres
+      - --db-password=postgres
+      - --db-url-database=keycloak_db
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    depends_on:
+      - db
+
+  app:
+    build: .
+    container_name: jobtinder-app
+    restart: always
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/jobtinder_db
+      KEYCLOAK_URL_INTERNAL: http://keycloak:8080
+      KEYCLOAK_URL_PUBLIC: https://jobtinder.local/keycloak
+      KEYCLOAK_REALM: FastAPI
+      KEYCLOAK_AUDIENCE: jobtinder-app
+    depends_on:
+      - db
+      - keycloak
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certs:/etc/nginx/certs:ro
+    depends_on:
+      - app
+      - keycloak
+
+volumes:
+  db_data:

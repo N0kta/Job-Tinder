@@ -10,7 +10,18 @@ import os
 from fastapi.templating import Jinja2Templates
 
 from db.database import create_db_and_tables
-create_db_and_tables()
+import time
+from sqlalchemy.exc import OperationalError
+
+for i in range(10):
+    try:
+        create_db_and_tables()
+        print("DB ready")
+        break
+    except OperationalError:
+        print("Waiting for DB...")
+        time.sleep(2)
+
 
 from app.routers.auth import get_current_user
 

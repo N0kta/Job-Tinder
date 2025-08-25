@@ -10,8 +10,8 @@
   <script>
     const realm = "FastAPI";
     const client_id = "jobtinder-app";
-    const keycloakUrl = "http://localhost:8080";
-    const redirect_uri="http://localhost:8000/auth/callback"
+    const keycloakUrl = "https://jobtinder.local/keycloak";
+    const redirect_uri="https://jobtinder.local/auth/callback"
 
     function generateRandomString(length) {
         const array = new Uint32Array(length);
@@ -36,7 +36,7 @@
 
     async function redirectToLogin() {
         const challenge = await createPKCECodes();
-        const url = `http://localhost:8080/realms/FastAPI/protocol/openid-connect/auth` +
+        const url = keycloakUrl+`/realms/FastAPI/protocol/openid-connect/auth` +
             `?client_id=${client_id}` +
             `&response_type=code` +
             `&scope=openid` +

@@ -10,15 +10,16 @@ router = APIRouter()
 # ======================
 # Keycloak Configuration
 # ======================
-KEYCLOAK_URL = "http://localhost:8080"
-REALM = "FastAPI"
-AUDIENCE = "jobtinder-app"
+KEYCLOAK_URL_INTERNAL = os.getenv("KEYCLOAK_URL_INTERNAL", "http://keycloak:8080")
+KEYCLOAK_URL_PUBLIC = os.getenv("KEYCLOAK_URL_PUBLIC", "https://jobtinder.local/keycloak")
+REALM = os.getenv("KEYCLOAK_REALM", "FastAPI")
+AUDIENCE = os.getenv("KEYCLOAK_AUDIENCE", "jobtinder-app")
 
-JWKS_URL = f"{KEYCLOAK_URL}/realms/{REALM}/protocol/openid-connect/certs"
-ISSUER = f"{KEYCLOAK_URL}/realms/{REALM}"
+JWKS_URL = f"{KEYCLOAK_URL_INTERNAL}/realms/{REALM}/protocol/openid-connect/certs"
+ISSUER = f"{KEYCLOAK_URL_PUBLIC}/realms/{REALM}"
 
 # OAuth2PasswordBearer: FastAPI extracts "Authorization: Bearer <token>"
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="http://localhost:8080/realms/FastAPI/protocol/openid-connect/token")  
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{KEYCLOAK_URL_INTERNAL}/realms/{REALM}/protocol/openid-connect/token")  
 # Note: "tokenUrl" is not used with Keycloak, but required by FastAPI’s schema.
 
 # Cache the JWKS keys (so we don’t fetch them on every request)
@@ -44,7 +45,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     3. Verify the token's signature and claims.
     4. Return decoded user info (claims).
     """
-
+    print(f"look here token: {token}")
     jwks = await get_jwks()
 
     try:
@@ -58,6 +59,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         )
         
     except JWTError as e:
+        print(f"look here error: {e}")
         raise HTTPException(status_code=401, detail="Invalid token") from e
 
     # Example: payload contains sub, preferred_username, roles, etc.

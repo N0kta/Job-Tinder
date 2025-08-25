@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environments
+venv/
+.env/
+
+# Git
+.git/
+.gitignore
+
+# IDE files
+.vscode/
+.idea/
+
+# Frontend build cache (if any)
+node_modules/
+dist/
+
+#docs & diagrams & services
+docs/
+diagrams/
+README.md
+systemd/

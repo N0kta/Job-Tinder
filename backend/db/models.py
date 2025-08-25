@@ -82,8 +82,7 @@ class Template(SQLModel, table=True):
     name: str = Field(nullable=False)
     structure: Dict[str, Any] = Field( 
         sa_column=Column(JSON,
-        nullable=False,
-        default_factory=dict))  # JSONB in SQL
+        nullable=False))  # JSONB in SQL
 
     created_by: int | None = Field(foreign_key="user.id")  # ON DELETE SET NULL handled manually in Python/DB
     creator: User | None = Relationship(back_populates="templates_created")
