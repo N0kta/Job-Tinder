@@ -19,7 +19,7 @@ JWKS_URL = f"{KEYCLOAK_URL_INTERNAL}/realms/{REALM}/protocol/openid-connect/cert
 ISSUER = f"{KEYCLOAK_URL_PUBLIC}/realms/{REALM}"
 
 # OAuth2PasswordBearer: FastAPI extracts "Authorization: Bearer <token>"
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{KEYCLOAK_URL_INTERNAL}/realms/{REALM}/protocol/openid-connect/token")  
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{KEYCLOAK_URL_PUBLIC}/realms/{REALM}/protocol/openid-connect/token")  
 # Note: "tokenUrl" is not used with Keycloak, but required by FastAPI’s schema.
 
 # Cache the JWKS keys (so we don’t fetch them on every request)
@@ -65,6 +65,15 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     # Example: payload contains sub, preferred_username, roles, etc.
     return payload
 
+def require_role(required_role: str):
+    def dependency(payload: dict = Depends(get_current_user)):
+        print(f"look very here: {payload}")
+        if payload.get("role") != required_role:
+            raise HTTPException(status_code=403, detail="Forbidden muhaha")
+        return payload
+    return dependency
+
+
 from app.core.config import templates
 
 @router.get("/login")
@@ -74,3 +83,13 @@ def login(request: Request):
 @router.get("/callback")
 def callback(request: Request):
     return templates.TemplateResponse("callback.html", {"request": request})
+
+@router.get("/employer")
+def login_employer(payload: dict =Depends(require_role("employer"))):
+    return {"message": "employer"}
+
+@router.get("/seeker")
+def login_seeker(payload: dict =Depends(require_role("seeker"))):
+    return {"message": "seeker"}
+
+
