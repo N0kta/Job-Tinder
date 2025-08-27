@@ -40,19 +40,9 @@ async function redirectToLogin() {
 }
 
 
-async function exchange_token() {
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get("code");
+async function getTokensWithCode(code) {
     const verifier = localStorage.getItem("pkce_verifier");
 
-    if (!code) {
-        const existingToken = localStorage.getItem("access_token");
-        console.log("token wird gesucht " + existingToken)
-        if (existingToken != "undefined") scheduleTokenRefresh(); // Already have tokens, no need to exchange code again
-        console.log("token is undefined")
-        return
-    };
-    console.log("es gibt code")
     // Exchange code for tokens directly with Keycloak
     const response = await fetch(keycloak_url+"/realms/FastAPI/protocol/openid-connect/token", {
         method: "POST",
@@ -67,15 +57,14 @@ async function exchange_token() {
     });
 
     const tokens = await response.json();
-    console.log("Got tokens:", tokens);
 
     // Store tokens in memory or cookie
+    localStorage.clear();
     localStorage.setItem("access_token", tokens.access_token);
     localStorage.setItem("refresh_token", tokens.refresh_token);
     localStorage.setItem("id_token", tokens.id_token);
 
-    window.history.replaceState({}, document.title, redirect_uri);
-    scheduleTokenRefresh()
+    window.history.replaceState({}, document.title, redirect_uri); 
 }
 
 async function refreshTokens() {
@@ -100,11 +89,7 @@ async function refreshTokens() {
     const tokens = await response.json();
     localStorage.setItem("access_token", tokens.access_token);
     localStorage.setItem("refresh_token", tokens.refresh_token);
-        if (tokens.id_token) {
-        localStorage.setItem("id_token", tokens.id_token);
-    }
-    scheduleTokenRefresh()
-    return tokens.access_token;
+    localStorage.setItem("id_token", tokens.id_token);
 }
 
 function parseJwt(token) {
@@ -115,25 +100,27 @@ function parseJwt(token) {
     }
 }
 
-function scheduleTokenRefresh() {
-    const accessToken = localStorage.getItem("access_token");
-    console.log("schedul refrash")
-    if (!accessToken) return;
-    console.log("yes token")
-    const payload = parseJwt(accessToken);
-    if (!payload || !payload.exp) return;
-    console.log("yes payload and exp")
-    const expiry = payload.exp * 1000; // seconds → ms
-    const now = Date.now();
-    const refreshTime = expiry - now - 5000; // refresh 5s before expiry
-    console.log("expiry: "+expiry+" now: "+now+" refshtime: "+refreshTime)
-
-    console.log("Scheduling token refresh in", refreshTime / 1000, "seconds");
-
+async function startTokenRefreshSchedule() {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+    if (code) {
+        await getTokensWithCode(code)
+    }
+    
+    const access_token = localStorage.getItem("access_token")
+    if (access_token == "undefined") {
+        console.log("Du muss wieder log innen")
+        return
+    }
+    const payload = parseJwt(access_token)
+    const refreshTime = payload.exp*1000 - Date.now() - 5000
     if (refreshTime > 0) {
-        setTimeout(refreshTokens, refreshTime);
+        console.log("Scheduling token refresh in", (refreshTime) / 1000, "seconds");
+        setTimeout(
+            () => {refreshTokens().then(startTokenRefreshSchedule)},
+            refreshTime)
     } else {
-        refreshTokens();
+        refreshTokens().then(startTokenRefreshSchedule)
     }
 }
 
@@ -159,4 +146,4 @@ function logout() {
         `&post_logout_redirect_uri=${encodeURIComponent(redirect_uri)}`;
 }
 
-export { exchange_token, logout, fetchProtected, redirectToLogin };
+export { startTokenRefreshSchedule, logout, fetchProtected, redirectToLogin };

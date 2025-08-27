@@ -4,6 +4,9 @@ from jose import jwt  # pip install python-jose
 from jose.exceptions import JWTError
 import httpx  # pip install httpx
 import os
+from db.database import get_session
+from sqlmodel import Session
+from db.models import User
 
 router = APIRouter()
 
@@ -38,14 +41,13 @@ async def get_jwks():
 # ==========================
 # Dependency to get user info
 # ==========================
-async def get_current_user(token: str = Depends(oauth2_scheme)):
+async def get_current_user(token: str = Depends(oauth2_scheme), db: Session =Depends(get_session)):
     """
     1. Extract token from Authorization header.
     2. Fetch Keycloak's public keys.
     3. Verify the token's signature and claims.
     4. Return decoded user info (claims).
     """
-    print(f"look here token: {token}")
     jwks = await get_jwks()
 
     try:
@@ -61,6 +63,17 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     except JWTError as e:
         print(f"look here error: {e}")
         raise HTTPException(status_code=401, detail="Invalid token") from e
+
+    #Add Shadow User Row if it doesnt exists
+    user_id = payload["sub"]
+
+    user = db.query(User).get(user_id)
+    if not user:
+        email = payload.get("email")
+        role = payload.get("role")
+        user = User(id=user_id, email=email, role=role)
+        db.add(user)
+        db.commit()
 
     # Example: payload contains sub, preferred_username, roles, etc.
     return payload

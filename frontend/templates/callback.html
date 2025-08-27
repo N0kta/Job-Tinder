@@ -10,8 +10,8 @@
     <button id="seeker">seeker page</button>
     <button id="employer">employer page</button>
     <script type="module">
-    import { exchange_token, logout, fetchProtected } from "/static/js/keycloak.js";
-    exchange_token()
+    import { startTokenRefreshSchedule, logout, fetchProtected } from "/static/js/keycloak.js";
+    startTokenRefreshSchedule()
     document.getElementById("logout").onclick = () => {
         logout()
     }

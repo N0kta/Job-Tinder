@@ -10,11 +10,8 @@ class UserRole(enum.Enum):
 
 # ----------------- USERS -----------------
 class User(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)
+    id: str | None = Field(default=None, primary_key=True)
     email: EmailStr  = Field(nullable=False, unique=True)
-    hashed_password: str = Field(nullable=False)
-    name: str | None = None
-    surname: str | None = None
     role: UserRole = Field(index=True)
 
     # Relationships
@@ -31,7 +28,7 @@ class Job(SQLModel, table=True):
     description: str = Field(nullable=False)
     created_at: datetime
 
-    employer_id: int = Field(foreign_key="user.id", nullable=False)
+    employer_id: str = Field(foreign_key="user.id", nullable=False)
     employer: User | None = Relationship(back_populates="jobs")
 
     applications: List["Application"] = Relationship(back_populates="job")
@@ -39,7 +36,7 @@ class Job(SQLModel, table=True):
 # ----------------- APPLICATIONS -----------------
 class Application(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
-    seeker_id: int = Field(foreign_key="user.id", nullable=False)
+    seeker_id: str = Field(foreign_key="user.id", nullable=False)
     job_id: int = Field(foreign_key="job.id", nullable=False)
     cv_text: str | None = None
     status: str = Field(default="pending")  # pending / liked / rejected
@@ -58,7 +55,7 @@ class ChatRoom(SQLModel, table=True):
 # ----------------- CHAT PARTICIPANTS -----------------
 class ChatParticipant(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
-    user_id: int = Field(foreign_key="user.id", nullable=False)
+    user_id: str = Field(foreign_key="user.id", nullable=False)
     chat_room_id: int = Field(foreign_key="chatroom.id", nullable=False)
 
     user: User | None = Relationship(back_populates="chat_participations")
@@ -68,7 +65,7 @@ class ChatParticipant(SQLModel, table=True):
 class Message(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     chat_room_id: int = Field(foreign_key="chatroom.id", nullable=False)
-    sender_id: int = Field(foreign_key="user.id", nullable=False)
+    sender_id: str = Field(foreign_key="user.id", nullable=False)
     content: str = Field(nullable=False)
     timestamp: datetime = Field(default_factory=datetime.now(timezone.utc))
 
@@ -84,5 +81,5 @@ class Template(SQLModel, table=True):
         sa_column=Column(JSON,
         nullable=False))  # JSONB in SQL
 
-    created_by: int | None = Field(foreign_key="user.id")  # ON DELETE SET NULL handled manually in Python/DB
+    created_by: str | None = Field(foreign_key="user.id")  # ON DELETE SET NULL handled manually in Python/DB
     creator: User | None = Relationship(back_populates="templates_created")
