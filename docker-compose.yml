@@ -17,6 +17,7 @@ services:
     restart: always
     command:
       - start-dev
+      - --features=declarative-user-profile
       - --hostname-url=https://jobtinder.local/keycloak
       - --hostname-admin-url=https://jobtinder.local/keycloak
       - --db=postgres
