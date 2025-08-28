@@ -26,7 +26,7 @@ class Job(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     titel: str = Field(nullable=False)
     description: str = Field(nullable=False)
-    created_at: datetime
+    created_at: datetime = Field(default_factory=datetime.utcnow, nullable=False)
 
     employer_id: str = Field(foreign_key="user.id", nullable=False)
     employer: User | None = Relationship(back_populates="jobs")
@@ -40,6 +40,7 @@ class Application(SQLModel, table=True):
     job_id: int = Field(foreign_key="job.id", nullable=False)
     cv_text: str | None = None
     status: str = Field(default="pending")  # pending / liked / rejected
+    created_at: datetime = Field(default_factory=datetime.utcnow, nullable=False)
 
     seeker: User | None = Relationship(back_populates="applications")
     job: Job | None = Relationship(back_populates="applications")

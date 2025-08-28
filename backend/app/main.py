@@ -1,8 +1,8 @@
 # main.py
 from fastapi import FastAPI, Depends
-from app.routers.jobs import router as jobs_router
-from app.routers.users import router as users_router
-from app.routers.auth import router as auth_router
+from .routers.jobs import router as jobs_router
+from .routers.users import router as users_router
+from .routers.auth import router as auth_router
 
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel

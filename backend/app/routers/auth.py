@@ -64,7 +64,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session =Dep
         print(f"look here error: {e}")
         raise HTTPException(status_code=401, detail="Invalid token") from e
 
-    #Add Shadow User Row if it doesnt exists
+    #Add Shadow User Row if it doesnt exist
     user_id = payload["sub"]
 
     user = db.query(User).get(user_id)

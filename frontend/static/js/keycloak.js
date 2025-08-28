@@ -75,21 +75,22 @@ async function refreshTokens() {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({
-        grant_type: "refresh_token",
-        client_id: client_id,
-        refresh_token: refresh_token,
+            grant_type: "refresh_token",
+            client_id: client_id,
+            refresh_token: refresh_token,
         }),
     });
 
     if (!response.ok) {
         console.error("Refresh failed");
-        return null;
+        return false;
     }
 
     const tokens = await response.json();
     localStorage.setItem("access_token", tokens.access_token);
     localStorage.setItem("refresh_token", tokens.refresh_token);
     localStorage.setItem("id_token", tokens.id_token);
+    return true
 }
 
 function parseJwt(token) {
@@ -108,19 +109,33 @@ async function startTokenRefreshSchedule() {
     }
     
     const access_token = localStorage.getItem("access_token")
-    if (access_token == "undefined") {
+    if (!access_token || access_token == "undefined") {
         console.log("Du muss wieder log innen")
+        redirectToLogin()
         return
     }
     const payload = parseJwt(access_token)
     const refreshTime = payload.exp*1000 - Date.now() - 5000
+
     if (refreshTime > 0) {
         console.log("Scheduling token refresh in", (refreshTime) / 1000, "seconds");
-        setTimeout(
-            () => {refreshTokens().then(startTokenRefreshSchedule)},
-            refreshTime)
+        setTimeout(async () => {
+            const ok = await refreshTokens();
+            if (ok) {
+                startTokenRefreshSchedule();
+            } else {
+                console.log("Refresh failed, redirecting to login...");
+                redirectToLogin();
+            }
+        }, refreshTime);
     } else {
-        refreshTokens().then(startTokenRefreshSchedule)
+        const ok = await refreshTokens();
+        if (ok) {
+            startTokenRefreshSchedule();
+        } else {
+            console.log("Refresh failed, redirecting to login...");
+            redirectToLogin();
+        }    
     }
 }
 

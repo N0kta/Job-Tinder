@@ -1,9 +1,9 @@
 # routers/jobs.py
-from fastapi import APIRouter
-from fastapi import Request
-from sqlmodel import SQLModel, Session
-from app.router.auth import require_role
+from fastapi import APIRouter, Request, Depends
+from sqlmodel import SQLModel, Session, select
+from .auth import require_role
 from db.database import get_session
+from db.models import ChatRoom, ChatParticipant, User, Template, Job, Application, Message
 
 router = APIRouter()
 
@@ -36,7 +36,7 @@ def create_job(job: JobCreate, session: Session =Depends(get_session), payload: 
 
     db_job = Job(
         **job.model_dump(),
-        employer_id=current_user['id']
+        employer_id=payload["sub"]
     )
 
     # 3. Add the new job and commit to the database
@@ -45,6 +45,7 @@ def create_job(job: JobCreate, session: Session =Depends(get_session), payload: 
     session.refresh(db_job)
 
     return db_job
+
 
 # Create Application
 class ApplicationCreate(SQLModel):
@@ -74,8 +75,6 @@ def create_application(
     
     return db_application
 
-from db.models import ChatRoom, ChatParticipant
-
 @router.post("/chat_rooms", response_model=ChatRoom)
 def create_chat_room(
     session: Session = Depends(get_session), 
@@ -98,8 +97,6 @@ def create_chat_room(
     session.refresh(db_chat_participant)
     
     return db_chat_room
-
-from your_app import Message, ChatRoom
 
 # Create Message
 class MessageCreate(SQLModel):
@@ -139,8 +136,6 @@ def create_message(
     session.refresh(db_message)
     
     return db_message
-
-from your_app import Template
 
 # Create Template
 class TemplateCreate(SQLModel):
