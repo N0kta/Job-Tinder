@@ -11,6 +11,7 @@ engine = create_engine(postgres_url, echo=True)
 
 from .models import User, Job, Application, ChatRoom, ChatParticipant, Message, Template
 def create_db_and_tables():
+    
     SQLModel.metadata.create_all(engine)
 
 
