@@ -1,4 +1,4 @@
-const app_uri = "https://jobtinder.local/api"
+const app_uri = "https://jobtinder.local/api/jobs"
 
 async function createPostRequest(data, path, successMessage = "Created Object: ", errorMessage = "Error: ") {
  const accessToken = localStorage.getItem("access_token");
@@ -37,7 +37,7 @@ async function createJob(titel, description) {
     titel: titel,
     description: description
   };
-  await createPostRequest(jobData, "/jobs/library", "Created New Job: ", "Couldnt create Job: ")
+  await createPostRequest(jobData, "/library", "Created New Job: ", "Couldnt create Job: ")
 }
 
 async function createApplication(jobId, cvText) {
@@ -45,11 +45,11 @@ async function createApplication(jobId, cvText) {
     job_id: jobId,
     cv_text: cvText
   };
-  await createPostRequest(applicationData, "/jobs/swipe", "Created New Application: ", "Couldnt create Application: ")
+  await createPostRequest(applicationData, "/swipe", "Created New Application: ", "Couldnt create Application: ")
 }
 
 async function createChatRoom() {
-  await createPostRequest(null, "/jobs/hire", "Created New ChatRoom: ", "Couldnt create ChatRoom: ")
+  await createPostRequest(null, "/hire", "Created New ChatRoom: ", "Couldnt create ChatRoom: ")
 }
 
 async function createMessage(chatRoomId, messageContent) {
@@ -57,7 +57,7 @@ async function createMessage(chatRoomId, messageContent) {
     chat_room_id: chatRoomId,
     content: messageContent
   };
-  await createPostRequest(messageData, "/jobs/chat", "Created New Message: ", "Couldnt create Message: ")
+  await createPostRequest(messageData, "/messages", "Created New Message: ", "Couldnt create Message: ")
 }
 
 async function createTemplate(type, name, structure) {
@@ -66,7 +66,11 @@ async function createTemplate(type, name, structure) {
     name: name,
     structure: structure
   };
-  await createPostRequest(templateData, "/jobs/template", "Created New Template: ", "Couldnt create Template: ")
+  await createPostRequest(templateData, "/template", "Created New Template: ", "Couldnt create Template: ")
 }
 
-export { createJob, createApplication, createChatRoom, createMessage, createTemplate };
+async function acceptApplication(application_id) {
+  await createPostRequest(null, `/applications/${application_id}/accept`, "Accepted seeker Application: ", "Couldnt accept Application: ")
+}
+
+export { createJob, createApplication, createChatRoom, createMessage, createTemplate, acceptApplication };

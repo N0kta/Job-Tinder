@@ -26,7 +26,7 @@ services:
       - --db-password=postgres
       - --db-url-database=keycloak_db
     environment:
-      KC_LOG_LEVEL: debug
+      #KC_LOG_LEVEL: debug
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
     depends_on:

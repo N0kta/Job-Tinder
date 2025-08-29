@@ -1,6 +1,6 @@
-const app_url = "https://jobtinder.local/api"
-const keycloak_url="https://jobtinder.local/keycloak"
-const redirect_uri=app_url+"/auth/callback"
+const app_url = "https://jobtinder.local"
+const api_uri = `${app_url}/api`
+const keycloak_url=`${app_url}/keycloak`
 const client_id="jobtinder-app"
 const realm = "FastAPI";
 
@@ -26,13 +26,13 @@ async function createPKCECodes() {
     return challenge;
 }
 
-async function redirectToLogin() {
+async function redirectToLogin(redirect_uri=window.location.pathname) {
     const challenge = await createPKCECodes();
-    const url = keycloak_url+`/realms/FastAPI/protocol/openid-connect/auth` +
+    const url = keycloak_url+`/realms/${realm}/protocol/openid-connect/auth` +
         `?client_id=${client_id}` +
         `&response_type=code` +
         `&scope=openid` +
-        `&redirect_uri=${redirect_uri}` +
+        `&redirect_uri=${app_url+redirect_uri}` +
         `&code_challenge=${challenge}` +
         `&code_challenge_method=S256`;
 
@@ -40,18 +40,18 @@ async function redirectToLogin() {
 }
 
 
-async function getTokensWithCode(code) {
+async function getTokensWithCode(code, redirect_uri=window.location.pathname) {
     const verifier = localStorage.getItem("pkce_verifier");
 
     // Exchange code for tokens directly with Keycloak
-    const response = await fetch(keycloak_url+"/realms/FastAPI/protocol/openid-connect/token", {
+    const response = await fetch(keycloak_url+`/realms/${realm}/protocol/openid-connect/token`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({
         grant_type: "authorization_code",
         client_id: client_id,
         code: code,
-        redirect_uri: redirect_uri,
+        redirect_uri: app_url+redirect_uri,
         code_verifier: verifier,
         })
     });
@@ -71,7 +71,7 @@ async function refreshTokens() {
     const refresh_token = localStorage.getItem("refresh_token");
     if (!refresh_token) return null;
 
-    const response = await fetch(keycloak_url + "/realms/FastAPI/protocol/openid-connect/token", {
+    const response = await fetch(keycloak_url + `/realms/${realm}/protocol/openid-connect/token`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({
@@ -156,7 +156,7 @@ function logout() {
 
     // Redirect to Keycloak logout endpoint
     window.location.href =
-        `${keycloak_url}/realms/FastAPI/protocol/openid-connect/logout` +
+        `${keycloak_url}/realms/${realm}/protocol/openid-connect/logout` +
         `?id_token_hint=${encodeURIComponent(idToken)}` +
         `&post_logout_redirect_uri=${encodeURIComponent(redirect_uri)}`;
 }

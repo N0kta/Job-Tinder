@@ -87,22 +87,3 @@ def require_role(required_role: str):
     return dependency
 
 
-from app.core.config import templates
-
-@router.get("/login")
-def login(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
-
-@router.get("/callback")
-def callback(request: Request):
-    return templates.TemplateResponse("callback.html", {"request": request})
-
-@router.get("/employer")
-def login_employer(payload: dict =Depends(require_role("employer"))):
-    return {"message": "employer"}
-
-@router.get("/seeker")
-def login_seeker(payload: dict =Depends(require_role("seeker"))):
-    return {"message": "seeker"}
-
-
