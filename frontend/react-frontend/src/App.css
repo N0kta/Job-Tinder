@@ -1,0 +1,47 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'PT Sans', sans-serif;
+}
+
+.home,
+.services,
+.products,
+.sign-up {
+    display: flex;
+    height: 90vh;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+}
+
+.bibliothek {
+    background-image: url('../public/images/img_google.png');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    color: #fff;
+    font-size: 100px;
+    height: 100vh;
+    width: 100%;
+}
+
+.swiping {
+    background-image: url('../public/images/img_arbeit.jpg');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    color: #fff;
+    font-size: 100px;
+    height: 100vh;
+}
+
+.sign-up {
+    background-image: url('../public/images/img_google.png');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    color: #fff;
+    font-size: 100px;
+}
