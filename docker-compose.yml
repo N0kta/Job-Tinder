@@ -47,7 +47,9 @@ services:
       - keycloak
 
   nginx:
-    image: nginx:latest
+    build:
+      context: ./frontend/react-frontend   # now builds frontend + serves
+      dockerfile: Dockerfile
     container_name: nginx
     ports:
       - "80:80"

@@ -1,4 +1,4 @@
-const app_url = "https://jobtinder.local"
+const app_url = "https://jobtinder.local/api"
 const keycloak_url="https://jobtinder.local/keycloak"
 const redirect_uri=app_url+"/auth/callback"
 const client_id="jobtinder-app"

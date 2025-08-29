@@ -1,4 +1,4 @@
-const app_uri = "https://jobtinder.local"
+const app_uri = "https://jobtinder.local/api"
 
 async function createPostRequest(data, path, successMessage = "Created Object: ", errorMessage = "Error: ") {
  const accessToken = localStorage.getItem("access_token");
