@@ -28,11 +28,17 @@ async function createPKCECodes() {
 
 async function redirectToLogin(redirect_uri=window.location.pathname) {
     const challenge = await createPKCECodes();
+    const full_redirect = encodeURIComponent(app_url + redirect_uri);  // encode for URL
+    console.log('keycloak_url:', keycloak_url);
+    console.log('app_url:', app_url);
+    console.log('redirect_uri:', redirect_uri);
+    console.log('typeof keycloak_url:', typeof keycloak_url);
+
     const url = keycloak_url+`/realms/${realm}/protocol/openid-connect/auth` +
         `?client_id=${client_id}` +
         `&response_type=code` +
         `&scope=openid` +
-        `&redirect_uri=${app_url+redirect_uri}` +
+        `&redirect_uri=${full_redirect}` +
         `&code_challenge=${challenge}` +
         `&code_challenge_method=S256`;
 
@@ -42,7 +48,7 @@ async function redirectToLogin(redirect_uri=window.location.pathname) {
 
 async function getTokensWithCode(code, redirect_uri=window.location.pathname) {
     const verifier = localStorage.getItem("pkce_verifier");
-
+    const full_redirect = encodeURIComponent(app_url + redirect_uri);  // encode for URL
     // Exchange code for tokens directly with Keycloak
     const response = await fetch(keycloak_url+`/realms/${realm}/protocol/openid-connect/token`, {
         method: "POST",
@@ -51,7 +57,7 @@ async function getTokensWithCode(code, redirect_uri=window.location.pathname) {
         grant_type: "authorization_code",
         client_id: client_id,
         code: code,
-        redirect_uri: app_url+redirect_uri,
+        redirect_uri: full_redirect,
         code_verifier: verifier,
         })
     });
@@ -150,15 +156,15 @@ async function fetchProtected() {
     console.log("Protected data:", data);
 }
 
-function logout() {
+function logout(redirect_uri=window.location.pathname) {
     const idToken = localStorage.getItem("id_token");
     localStorage.clear();
-
+    const full_redirect = encodeURIComponent(app_url + redirect_uri);  // encode for URL
     // Redirect to Keycloak logout endpoint
     window.location.href =
         `${keycloak_url}/realms/${realm}/protocol/openid-connect/logout` +
         `?id_token_hint=${encodeURIComponent(idToken)}` +
-        `&post_logout_redirect_uri=${encodeURIComponent(redirect_uri)}`;
+        `&post_logout_redirect_uri=${full_redirect}`;
 }
 
 export { startTokenRefreshSchedule, logout, fetchProtected, redirectToLogin };

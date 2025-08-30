@@ -54,12 +54,12 @@ function Navbar() {
                             </Link>
                         </li>
                         <li className="nav-item">
-                            <Link to="/sign-up" className='nav-links-mobile' onClick={redirectToLogin}>
+                            <Link to="/sign-up" className='nav-links-mobile' onClick={() => redirectToLogin()}>
                                 Registrieren
                             </Link>
                         </li>
                     </ul>
-                    {button && <Button buttonStyle='btn--outline' onClick={redirectToLogin}>SIGN UP</Button>}
+                    {button && <Button buttonStyle='btn--outline' onClick={() => redirectToLogin()}>SIGN UP</Button>}
                 </div>
             </nav>
         </>
