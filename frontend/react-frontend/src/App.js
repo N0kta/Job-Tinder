@@ -5,6 +5,7 @@ import Home from './components/pages/Home';
 import Swiping from "./components/pages/Swiping";
 import Bibliothek from "./components/pages/Bibliothek";
 
+
 function App() {
   return (
     <div className="App">

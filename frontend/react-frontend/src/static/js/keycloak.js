@@ -28,11 +28,7 @@ async function createPKCECodes() {
 
 async function redirectToLogin(redirect_uri=window.location.pathname) {
     const challenge = await createPKCECodes();
-    const full_redirect = encodeURIComponent(app_url + redirect_uri);  // encode for URL
-    console.log('keycloak_url:', keycloak_url);
-    console.log('app_url:', app_url);
-    console.log('redirect_uri:', redirect_uri);
-    console.log('typeof keycloak_url:', typeof keycloak_url);
+    const full_redirect = app_url + redirect_uri;  // encode for URL
 
     const url = keycloak_url+`/realms/${realm}/protocol/openid-connect/auth` +
         `?client_id=${client_id}` +
@@ -47,8 +43,9 @@ async function redirectToLogin(redirect_uri=window.location.pathname) {
 
 
 async function getTokensWithCode(code, redirect_uri=window.location.pathname) {
+    console.log("why am i getting called")
     const verifier = localStorage.getItem("pkce_verifier");
-    const full_redirect = encodeURIComponent(app_url + redirect_uri);  // encode for URL
+    const full_redirect = app_url + redirect_uri;  // encode for URL
     // Exchange code for tokens directly with Keycloak
     const response = await fetch(keycloak_url+`/realms/${realm}/protocol/openid-connect/token`, {
         method: "POST",
@@ -65,7 +62,9 @@ async function getTokensWithCode(code, redirect_uri=window.location.pathname) {
     const tokens = await response.json();
 
     // Store tokens in memory or cookie
-    localStorage.clear();
+    //localStorage.clear();
+    console.log("setting tokens")
+    console.log(tokens)
     localStorage.setItem("access_token", tokens.access_token);
     localStorage.setItem("refresh_token", tokens.refresh_token);
     localStorage.setItem("id_token", tokens.id_token);
@@ -106,18 +105,32 @@ function parseJwt(token) {
         return null;
     }
 }
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 async function startTokenRefreshSchedule() {
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
+    
+    /*await sleep(5000);
+    console.log("before code"+code)
+    if(!code)
+        redirectToLogin()
+    else
+        getTokensWithCode(code)*/
+
     if (code) {
+        console.log("getting codes")
         await getTokensWithCode(code)
+        console.log("got token: with code "+code )
     }
     
     const access_token = localStorage.getItem("access_token")
+    console.log(access_token)
     if (!access_token || access_token === "undefined") {
         console.log("Du muss wieder log innen")
-        redirectToLogin()
+        redirectToLogin("/swipe1")
         return
     }
     const payload = parseJwt(access_token)
@@ -131,7 +144,7 @@ async function startTokenRefreshSchedule() {
                 startTokenRefreshSchedule();
             } else {
                 console.log("Refresh failed, redirecting to login...");
-                redirectToLogin();
+                redirectToLogin("/swipe2");
             }
         }, refreshTime);
     } else {
@@ -140,7 +153,7 @@ async function startTokenRefreshSchedule() {
             startTokenRefreshSchedule();
         } else {
             console.log("Refresh failed, redirecting to login...");
-            redirectToLogin();
+            redirectToLogin("/swipe3");
         }    
     }
 }
@@ -159,11 +172,11 @@ async function fetchProtected() {
 function logout(redirect_uri=window.location.pathname) {
     const idToken = localStorage.getItem("id_token");
     localStorage.clear();
-    const full_redirect = encodeURIComponent(app_url + redirect_uri);  // encode for URL
+    const full_redirect = app_url + redirect_uri;  // encode for URL
     // Redirect to Keycloak logout endpoint
     window.location.href =
         `${keycloak_url}/realms/${realm}/protocol/openid-connect/logout` +
-        `?id_token_hint=${encodeURIComponent(idToken)}` +
+        `?id_token_hint=${idToken}` +
         `&post_logout_redirect_uri=${full_redirect}`;
 }
 
