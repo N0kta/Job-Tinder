@@ -112,7 +112,7 @@ function sleep(ms) {
 async function startTokenRefreshSchedule() {
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
-    
+
     /*await sleep(5000);
     console.log("before code"+code)
     if(!code)
@@ -130,7 +130,7 @@ async function startTokenRefreshSchedule() {
     console.log(access_token)
     if (!access_token || access_token === "undefined") {
         console.log("Du muss wieder log innen")
-        redirectToLogin("/swipe1")
+        redirectToLogin()
         return
     }
     const payload = parseJwt(access_token)
@@ -144,7 +144,7 @@ async function startTokenRefreshSchedule() {
                 startTokenRefreshSchedule();
             } else {
                 console.log("Refresh failed, redirecting to login...");
-                redirectToLogin("/swipe2");
+                redirectToLogin();
             }
         }, refreshTime);
     } else {
@@ -153,7 +153,7 @@ async function startTokenRefreshSchedule() {
             startTokenRefreshSchedule();
         } else {
             console.log("Refresh failed, redirecting to login...");
-            redirectToLogin("/swipe3");
+            redirectToLogin();
         }    
     }
 }
