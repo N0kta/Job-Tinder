@@ -45,3 +45,12 @@
     color: #fff;
     font-size: 100px;
 }
+
+.test {
+margin: 100px;
+background: blue;
+max-width: 100px;
+max-height: 100px;
+text-align: center;
+align-items: center;
+}

@@ -43,7 +43,6 @@ async function redirectToLogin(redirect_uri=window.location.pathname) {
 
 
 async function getTokensWithCode(code, redirect_uri=window.location.pathname) {
-    console.log("why am i getting called")
     const verifier = localStorage.getItem("pkce_verifier");
     const full_redirect = app_url + redirect_uri;  // encode for URL
     // Exchange code for tokens directly with Keycloak
@@ -113,17 +112,8 @@ async function startTokenRefreshSchedule() {
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
 
-    /*await sleep(5000);
-    console.log("before code"+code)
-    if(!code)
-        redirectToLogin()
-    else
-        getTokensWithCode(code)*/
-
     if (code) {
-        console.log("getting codes")
         await getTokensWithCode(code)
-        console.log("got token: with code "+code )
     }
     
     const access_token = localStorage.getItem("access_token")
@@ -166,7 +156,6 @@ async function fetchProtected() {
     });
 
     const data = await response.json();
-    console.log("Protected data:", data);
 }
 
 function logout(redirect_uri=window.location.pathname) {
@@ -180,4 +169,4 @@ function logout(redirect_uri=window.location.pathname) {
         `&post_logout_redirect_uri=${full_redirect}`;
 }
 
-export { startTokenRefreshSchedule, logout, fetchProtected, redirectToLogin };
+export { startTokenRefreshSchedule, logout, fetchProtected, redirectToLogin, parseJwt };
