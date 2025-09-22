@@ -21,6 +21,10 @@ async function fetchData(url) {
         throw error;
     }
 }
+//Retrieves random jobs.
+async function getJobs() {
+    return fetchData("/");
+}
 
 //Retrieves all jobs created by the authenticated employer.
 async function getEmployerJobs() {
@@ -57,4 +61,4 @@ async function getUserTemplates() {
     return fetchData("/templates/user");
 }
 
-export { getEmployerJobs, getSeekerApplications, getJobApplicationsForEmployer, getUserChatRooms, getChatRoomMessages, getPublicTemplates, getUserTemplates }
+export { getJobs ,getEmployerJobs, getSeekerApplications, getJobApplicationsForEmployer, getUserChatRooms, getChatRoomMessages, getPublicTemplates, getUserTemplates }

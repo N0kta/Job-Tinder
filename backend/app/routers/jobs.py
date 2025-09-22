@@ -5,6 +5,8 @@ from .auth import require_role, get_current_user
 from db.database import get_session
 from db.models import ChatRoom, ChatParticipant, User, Template, Job, Application, Message
 
+from sqlalchemy.orm import selectinload
+
 router = APIRouter()
 
 
@@ -200,8 +202,15 @@ def create_template(
     return db_template
 
 # --- GET ENDPOINTS ---
+@router.get("/")
+def get_jobs(limit: int = 20, offset: int = 0, session: Session = Depends(get_session)):
+    """
+    Return random jobs for seeker to swipe to.
+    """
+    return session.exec(select(Job).offset(offset).limit(limit)).all()
+
 @router.get("/library", response_model=list[Job])
-def get_jobs(session: Session = Depends(get_session), payload: dict = Depends(require_role("employer"))):
+def get_employer_jobs(session: Session = Depends(get_session), payload: dict = Depends(require_role("employer"))):
     """
     Retrieves all jobs created by the authenticated user (employer).
     """
@@ -215,7 +224,11 @@ def get_seeker_applications(session: Session = Depends(get_session), payload: di
     """
     # The `require_role("seeker")` dependency ensures only seekers can access this endpoint.
     seeker_id = payload.get("sub")
-    applications = session.exec(select(Application).where(Application.seeker_id == seeker_id)).all()
+    applications = session.exec(
+        select(Application)
+        .where(Application.seeker_id == seeker_id)
+        .options(selectinload(Application.job))
+        ).all()
     return applications
 
 @router.get("/applications/{job_id}", response_model=list[Application])
