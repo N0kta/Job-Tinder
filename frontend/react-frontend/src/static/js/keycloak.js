@@ -1,7 +1,7 @@
 const app_url = "https://jobtinder.local"
 const api_uri = `${app_url}/api`
 const keycloak_url=`${app_url}/keycloak`
-const client_id="jobtinder-app"
+const client_id="jobtinder-frontend"
 const realm = "FastAPI";
 
 
@@ -37,7 +37,7 @@ async function redirectToLogin(redirect_uri=window.location.pathname) {
         `&redirect_uri=${full_redirect}` +
         `&code_challenge=${challenge}` +
         `&code_challenge_method=S256`;
-
+    console.log(url);
     window.location.href = url;
 }
 

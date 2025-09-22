@@ -1,0 +1,5 @@
+### check admin token ###
+curl -k -d "client_id=admin-cli" -d "username=admin" -d "password=admin" -d "grant_type=password" "https://jobtinder.local/keycloak/realms/master/protocol/openid-connect/token"
+
+### get details of the master realm ###
+curl -k -H "Authorization: Bearer access_token" "http://jobtinder.local/keycloak/admin/realms/master"
