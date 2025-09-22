@@ -11,7 +11,7 @@ import TinderCard from 'react-tinder-card'
 
 
 export default function Swiping() {
-    const [data, setData] = useState("kasekuchen"); // store jobs here
+    const [data, setData] = useState([]); // store jobs here
     const [loading, setLoading] = useState(true);
     const { role } = useContext(AuthContext); // wait for tokens
 
@@ -37,13 +37,8 @@ export default function Swiping() {
     } else {
         test="Hier wartet dein Traumjob"
     }
-     const cards = [
-    { id: 1, text: "Job 1 - Backend Developer" },
-    { id: 2, text: "Job 2 - Frontend Developer" },
-    { id: 3, text: "Job 3 - Data Scientist" },
-  ];
 
-  const [currentIndex, setCurrentIndex] = useState(cards.length - 1);
+  const [currentIndex, setCurrentIndex] = useState(data.length - 1);
 
     const swiped = (direction, cardId) => {
         console.log("Swiped " + direction + " on " + cardId);
@@ -55,43 +50,61 @@ export default function Swiping() {
     };
     return (
     <div>
-        <h1 className='swiping'>{test}</h1>
         <div
-        style={{
-            position: "relative",
-            width: "300px",
-            height: "400px",
-            margin: "50px auto",
-        }}
-        >
-        {cards.map((card, index) => (
-            <TinderCard
-            key={card.id}
-            onSwipe={(dir) => swiped(dir, card.text)}
-            preventSwipe={["up", "down"]}
-            >
-            <div
-                style={{
-                position: "absolute",
-                width: "100%",
-                height: "100%",
-                background: "white",
-                borderRadius: "10px",
-                boxShadow: "0px 5px 15px rgba(0,0,0,0.2)",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                fontSize: "20px",
-                fontWeight: "bold",
-                top: 0,
-                left: 0,
-                zIndex: index,
-                }}
-            >
-                {card.text}
-            </div>
-            </TinderCard>
-        ))}
-        </div>
+  style={{
+    position: "relative",
+    width: "100vw",       // full viewport width
+    height: "100vh",      // full viewport height
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  }}
+>
+
+  {data.map((job, index) => (
+    <TinderCard
+  key={job.id}
+  onSwipe={(dir) => swiped(dir, job.id)}
+  preventSwipe={["up", "down"]}
+  style={{ width: "400px", height: "auto" }} // ensure TinderCard wrapper matches
+>
+
+      <div
+  style={{
+    position: "absolute",
+    width: "400px",       // fixed width
+    maxWidth: "400px",
+    minHeight: "250px",
+    maxHeight: "80vh",
+    background: "white",
+    borderRadius: "16px",
+    boxShadow: "0px 8px 20px rgba(0,0,0,0.25)",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    padding: "24px",
+    boxSizing: "border-box",
+    zIndex: data.length - index,
+  }}
+>
+
+        <h2 style={{ marginBottom: "10px" }}>{job.titel}</h2>
+        <p style={{
+          marginBottom: "15px",
+          overflowY: "auto",            // 🔹 scroll if description is long
+          flex: 1,
+        }}>
+          {job.description}
+        </p>
+        <small style={{ color: "#666" }}>
+          Posted: {new Date(job.created_at).toLocaleDateString()}
+        </small>
+      </div>
+    </TinderCard>
+  ))}
+</div>
+
+
+
     </div>)
 }

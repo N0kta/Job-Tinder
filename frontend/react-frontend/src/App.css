@@ -5,6 +5,12 @@
     font-family: 'PT Sans', sans-serif;
 }
 
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* 🚫 disable horizontal scrolling */
+}
+
 .home,
 .services,
 .products,
@@ -27,7 +33,7 @@
     width: 100%;
 }
 
-.swiping {
+/*.swiping {
     background-image: url('../public/images/img_arbeit.jpg');
     background-position: center;
     background-size: cover;
@@ -35,7 +41,7 @@
     color: #fff;
     font-size: 100px;
     height: 100vh;
-}
+}*/
 
 .sign-up {
     background-image: url('../public/images/img_google.png');
