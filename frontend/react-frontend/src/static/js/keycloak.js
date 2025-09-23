@@ -1,7 +1,7 @@
 const app_url = "https://jobtinder.local"
 const api_uri = `${app_url}/api`
 const keycloak_url=`${app_url}/keycloak`
-const client_id="jobtinder-frontend"
+const client_id="jobtinder-app"
 const realm = "FastAPI";
 
 

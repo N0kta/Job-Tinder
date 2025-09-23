@@ -57,7 +57,7 @@ async function createMessage(chatRoomId, messageContent) {
     chat_room_id: chatRoomId,
     content: messageContent
   };
-  await createPostRequest(messageData, "/messages", "Created New Message: ", "Couldnt create Message: ")
+  return await createPostRequest(messageData, "/messages", "Created New Message: ", "Couldnt create Message: ")
 }
 
 async function createTemplate(type, name, structure) {

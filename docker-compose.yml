@@ -9,21 +9,8 @@ services:
       POSTGRES_DB: jobtinder_db
     volumes:
       - db_data:/var/lib/postgresql/data
-      # - ./init-keycloak.sql:/docker-entrypoint-initdb.d/init-keycloak.sql
-
-  keycloak-db:
-    image: postgres:15
-    container_name: keycloak-db
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: keycloak_db
-    volumes:
-      - keycloak_db_data:/var/lib/postgresql/data
-      # - ./init-keycloak.sql:/docker-entrypoint-initdb.d/init-keycloak.sql
-
-
+      - ./init-keycloak.sql:/docker-entrypoint-initdb.d/init-keycloak.sql
+      
   keycloak:
     image: quay.io/keycloak/keycloak:23.0.7
     container_name: keycloak
@@ -34,7 +21,7 @@ services:
       - --hostname-url=https://jobtinder.local/keycloak
       - --hostname-admin-url=https://jobtinder.local/keycloak
       - --db=postgres
-      - --db-url-host=keycloak-db
+      - --db-url-host=db
       - --db-username=postgres
       - --db-password=postgres
       - --db-url-database=keycloak_db
@@ -76,4 +63,4 @@ services:
 
 volumes:
   db_data:
-  keycloak_db_data:
+  #keycloak_db_data:

@@ -1,5 +1,5 @@
 # routers/jobs.py
-from fastapi import APIRouter, Request, Depends
+from fastapi import APIRouter, Request, Depends, HTTPException
 from sqlmodel import SQLModel, Session, select
 from .auth import require_role, get_current_user
 from db.database import get_session
@@ -131,7 +131,42 @@ def accept_application(
     session.commit()
     session.refresh(db_chat_room)
 
+    application.status = "accepted"  # change status
+    application.chat_room_id = db_chat_room.id
+    session.commit()                  # save changes
+    session.refresh(application)   
+
     return db_chat_room
+
+#Reject Application
+@router.post("/applications/{application_id}/reject", response_model=ChatRoom)
+def reject_application(
+    application_id: int,
+    session: Session = Depends(get_session),
+    payload: dict = Depends(require_role("employer"))
+):
+    """
+    Reject a job application.
+    """
+    employer_id = payload.get("sub")
+
+    # Fetch the application to ensure it exists and belongs to the employer's job
+    application = session.exec(select(Application).where(Application.id == application_id)).one_or_none()
+    if not application:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Application not found.")
+
+    # Verify the employer owns the job associated with the application
+    job = session.exec(select(Job).where(Job.id == application.job_id, Job.employer_id == employer_id)).one_or_none()
+    if not job:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to accept this application.")
+
+    application.status = "rejected"  # change status
+    session.add(application)          # optional; SQLModel tracks it automatically
+    session.commit()                  # save changes
+    session.refresh(application)      # refresh object
+    return application
+
+
 
 # Create Message
 class MessageCreate(SQLModel):
@@ -203,11 +238,27 @@ def create_template(
 
 # --- GET ENDPOINTS ---
 @router.get("/")
-def get_jobs(limit: int = 20, offset: int = 0, session: Session = Depends(get_session)):
+def get_jobs(limit: int = 20, offset: int = 0, session: Session = Depends(get_session), payload: dict = Depends(require_role("seeker"))):
     """
-    Return random jobs for seeker to swipe to.
+    Return jobs for seeker to swipe on, excluding jobs the seeker already applied to or accepted/rejected.
     """
-    return session.exec(select(Job).offset(offset).limit(limit)).all()
+    seeker_id = payload.get("sub")
+
+    # Subquery: job IDs that the seeker has already applied to
+    applied_job_ids = session.exec(
+        select(Application.job_id)
+        .where(Application.seeker_id == seeker_id)
+    ).all()
+
+    # Main query: jobs not in that list
+    jobs = session.exec(
+        select(Job)
+        .where(Job.id.notin_(applied_job_ids))
+        .offset(offset)
+        .limit(limit)
+    ).all()
+
+    return jobs
 
 @router.get("/library", response_model=list[Job])
 def get_employer_jobs(session: Session = Depends(get_session), payload: dict = Depends(require_role("employer"))):

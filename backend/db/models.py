@@ -42,13 +42,15 @@ class Application(SQLModel, table=True):
     status: str = Field(default="pending")  # pending / liked / rejected
     created_at: datetime = Field(default_factory=datetime.utcnow, nullable=False)
 
+    chat_room_id: int | None = Field(default=None, foreign_key="chatroom.id")
+
     seeker: User | None = Relationship(back_populates="applications")
     job: Job | None = Relationship(back_populates="applications")
 
 # ----------------- CHAT ROOMS -----------------
 class ChatRoom(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
-    created_at: datetime = Field(default_factory=datetime.now(timezone.utc))
+    created_at: datetime = Field(default_factory=datetime.utcnow)
 
     participants: List["ChatParticipant"] = Relationship(back_populates="chat_room")
     messages: List["Message"] = Relationship(back_populates="chat_room")
@@ -68,7 +70,7 @@ class Message(SQLModel, table=True):
     chat_room_id: int = Field(foreign_key="chatroom.id", nullable=False)
     sender_id: str = Field(foreign_key="user.id", nullable=False)
     content: str = Field(nullable=False)
-    timestamp: datetime = Field(default_factory=datetime.now(timezone.utc))
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
 
     chat_room: ChatRoom | None = Relationship(back_populates="messages")
     sender: User | None = Relationship(back_populates="sent_messages")
